@@ -1,0 +1,59 @@
+{include file="page_header"}
+<div class="con">
+    <div class="goods-info user-order of-hidden ts-3"style="padding-top:4rem">
+        <nav class="tab-title b-color-f of-hidden" style="position:fixed">
+            <ul class="dis-box">
+                <li class="box-flex {if empty($status)}active{/if}"><a status="0" >低级分享</a></li>
+                <li class="box-flex {if $status ==1}active{/if}"><a status="1" >中级分享</a></li>
+                <li class="box-flex {if $status == 2}active{/if}"><a status="2" >高级分享</a></li>
+            </ul>
+        </nav>
+        <section class="store_info">
+                    <script id="j-product" type="text/html">
+                    <% if order_list!=""%>
+                        <%each order_list as order%>
+                        <section class="flow-checkout-pro  m-top08">
+                            <header class="b-color-f dis-box padding-all">
+                                <span class=" box-flex">
+                                    <%order.user_name%>
+                                </span>
+                                <em class="j-goods-coupon t-first f-04"><%order.nick_name%></em>
+                            </header>
+                            <div class="f-c-p-orderid padding-all m-top1px b-color-f">
+                                <a class="product-div-link" href="javascript:void()"></a>
+
+                                <h4 class="t-remark2">
+                                    <label class="t-remark">所属店铺：</label><%order.belong_shop%>
+                                     <span class="t-jiantou"></span>
+                                </h4>
+                                <p class="t-remark3 m-top04"><%order.reg_time%></p>
+                            </div>
+					<div class="padding-all f-05 user-order-money b-color-f">拥有卡数量：<em class="t-first"><%order.has_card_num%>张</em></div>
+                           
+                        </section>
+                        <%/each%>
+                        <%else%>
+                        <div class="no-div-message">
+                            <i class="iconfont icon-biaoqingleiben"></i>
+                               <p>亲，您还没有此类型分享～！</p>
+                            </div>
+                        <%/if%>
+                        </script>
+            </section>
+        </div>
+    </div>
+    <!--快捷导航-->
+    {include file="float_nav"}
+    {include file="float_nav_footer"}
+    <script type="text/javascript">
+        //订单列表
+        var infinite = $('.store_info').infinite({url: "{url('user/account/my_share_list')}", template: 'j-product', params: 'status={$status}'});
+        $(".tab-title a").click(function () {
+            var status = $(this).attr('status');
+
+            infinite.onload('status=' + status);
+            $(this).parent().addClass("active").siblings().removeClass("active");
+        })
+    </script>
+</body>
+</html>

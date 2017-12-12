@@ -1,0 +1,70 @@
+{include file="page_header"}
+		<div class="con">
+                         <form action="{url('user/account/returnzengzhi')}" method="post">
+			<div class="user-recharge b-color-f">
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all">
+						<label class="t-remark">转让金额</label>
+						<div class="box-flex input-text">
+                                                    <input class="j-input-text" type="text" placeholder="本次最多可转让金额为{$process_type.pay_points}" name="amount">
+					</div>
+					</div>
+				</section>
+
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all">
+						<label class="t-remark">转让编号</label>
+						<div class="box-flex input-text">
+                                                    <input class="j-input-text" type="text" placeholder="请输入要转让会员的编号" name="return_username" onblur="find()"><p id='find'><font color="red" id= 'find_name'></font></p>
+					</div>
+					</div>
+				</section>
+
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all">
+						<label class="t-remark">二级密码</label>
+						<div class="box-flex input-text">
+                                                    <input class="j-input-text" type="password" placeholder="请输入支付密码" name="paypwd">
+					</div>
+					</div>
+				</section>
+			
+                           
+			</div>
+			<div class="padding-all">
+                            <button type="submit" class="btn-submit br-5 min-btn" name="submit" value="sub">确认</button>
+			</div>
+                 
+                             <!--提现layer-->
+                             <div class="mask-filter-div"></div>
+                             
+          </form>
+		</div>
+		<!--引用js-->
+     <!--快捷导航-->
+    {include file="float_nav"} 
+                <li>
+                    <a href="{url('user/account/index')}">
+                         <i class="iconfont icon-money"></i>
+                         <p>资金管理</p>
+                    </a> 
+                </li>                
+    {include file="float_nav_footer"} 
+
+		<script type="text/javascript">
+			function show(pid){
+                           $("input[name=payment_id]").val(pid);
+                        }
+
+            function find() {
+				var name = $("input[name=return_username]").val();
+				$.get('{url("user/account/getreturnname")}', {
+					user_name : name
+				}, function(data) {
+					$('#find_name').html(data);
+				});
+			}            
+		</script>
+	</body>
+
+</html>

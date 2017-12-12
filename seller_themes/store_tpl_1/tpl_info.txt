@@ -1,0 +1,10 @@
+------tpl_info------------
+tpl name：新睿社区设计商家店铺模板NO.1
+tpl url：../seller_themes/store_tpl_1/screenshot.png
+description：橙色，大气，服装店铺模板
+version：v1.0
+author：新睿社区
+author url：http://www.010xr.com/
+tpl_path：st_one
+win_goods_type：2
+------tpl_info------------

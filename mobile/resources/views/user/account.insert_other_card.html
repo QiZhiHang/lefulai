@@ -1,0 +1,152 @@
+{include file="page_header"}
+		<div class="con">
+                         <form action="{url('user/account/insert_other_card')}" method="post">
+			<div class="user-recharge b-color-f">
+				
+				<section class="padding-lr j-show-div j-show-get-val">
+					<div class="text-all dis-box ">
+						<label class="t-remark">选择种类</label>
+						<div class="box-flex t-goods1 text-right onelist-hidden"><span> </span> <em class="t-first"></em></div>
+                                           
+						<span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+					</div>
+					<!--充值方式弹出层-->
+					<div class="show-time-con ts-3 b-color-1 j-filter-show-div">
+									<section class="goods-show-title of-hidden padding-all b-color-f">
+										<h3 class="fl g-c-title-h3">购卡级别</h3>
+										<i class="iconfont icon-guanbi2 show-div-guanbi fr"></i>
+									</section>
+									<section class="s-g-list-con swiper-scroll">
+										<div class="swiper-wrapper">
+											<div class="swiper-slide select-two">
+												<ul class="j-get-one padding-all">
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(1)"  ><dd><span>一星会员 金额：</span> <em class="t-first">980</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(2)"  ><dd><span>二星会员 金额：</span> <em class="t-first">4900</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(3)"  ><dd><span>三星会员 金额：</span> <em class="t-first">9800</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(4)"  ><dd><span>四星会员 金额：</span> <em class="t-first">14700</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(5)"  ><dd><span>五星会员 金额：</span> <em class="t-first">19600</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(7)"  ><dd><span>一星客户 金额：</span> <em class="t-first">1280</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(8)"  ><dd><span>二星客户 金额：</span> <em class="t-first">6400</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(9)"  ><dd><span>三星客户 金额：</span> <em class="t-first">12800</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(10)"  ><dd><span>四星客户 金额：</span> <em class="t-first">19200</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(11)"  ><dd><span>五星客户 金额：</span> <em class="t-first">25600</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+												</ul>
+											</div>
+											<div class="swiper-scrollbar"></div>
+										</div>
+									</section>
+								</div>
+				</section>
+
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all">
+						<label class="t-remark">入单编号</label>
+						<div class="box-flex input-text">
+                                                    <input class="j-input-text" type="text" placeholder="填写要入单会员的编号" name="user_name" onblur="find2()"><p id='find'><font color="red" id= 'find_name2'></font></p>
+					</div>
+					</div>
+				</section>
+
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all">
+						<label class="t-remark">销售编号</label>
+						<div class="box-flex input-text">
+                                                    <input class="j-input-text" type="text" placeholder="填写推荐编号的会员会获得销售奖" name="re_username" onblur="find()"><p id='find'><font color="red" id= 'find_name'></font></p>
+					</div>
+					</div>
+				</section>
+
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all">
+						<label class="t-remark">二级密码</label>
+						<div class="box-flex input-text">
+                                                    <input class="j-input-text" type="password" placeholder="请填写自己的二级密码" name="paypwd">
+					</div>
+					</div>
+				</section>
+                           
+			</div>
+			<div class="padding-all">
+                            <button type="submit" class="btn-submit br-5 min-btn" name="submit" value="sub">确认操作</button>
+			</div>
+                 
+                             <!--提现layer-->
+                             <div class="mask-filter-div"></div>
+                             <div class="two-btn ect-padding-tb ect-padding-lr ect-margin-tb text-center">
+                                 <input type="hidden" name="surplus_type" value="0" />
+                                 <input type="hidden" name="payment_id" value="0" />
+                                 <input type="hidden" name="pay_code" value="0" />
+                                 <input type="hidden" name="pay_name" value="0" />
+                                 <input type="hidden" name="pay_fee" value="0" />
+                                 <input type="hidden" name="rec_id" value="0" />
+                                 
+                                 <input type="hidden" name="choose_type" value="0" />
+
+
+                             </div>
+          </form>
+		</div>
+		<!--引用js-->
+     <!--快捷导航-->
+    {include file="float_nav"} 
+                <li>
+                    <a href="{url('user/account/index')}">
+                         <i class="iconfont icon-money"></i>
+                         <p>资金管理</p>
+                    </a> 
+                </li>                
+    {include file="float_nav_footer"} 
+
+		<script type="text/javascript">
+			function show(pid){
+                           $("input[name=choose_type]").val(pid);
+                        }
+            function find() {
+				var name = $("input[name=re_username]").val();
+				$.get('{url("user/account/getreturnname")}', {
+					user_name : name
+				}, function(data) {
+					$('#find_name').html(data);
+				});
+			}
+			function find2() {
+				var name = $("input[name=user_name]").val();
+				$.get('{url("user/account/getreturnname")}', {
+					user_name : name
+				}, function(data) {
+					$('#find_name2').html(data);
+				});
+			}
+		</script>
+	</body>
+
+</html>
