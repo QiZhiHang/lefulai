@@ -20,6 +20,9 @@ $modules['17_merchants']['13_comment_seller_rank'] = 'comment_seller.php?act=lis
 $modules['17_merchants']['12_seller_store'] = 'offline_store.php?act=list&type=1';
 $modules['17_merchants']['16_users_real'] = 'user_real.php?act=list&user_type=1';
 $modules['08_members']['12_user_address_list'] = 'user_address_log.php?act=list';
+/*积分每日统计*/
+$modules['08_members']['12_user_jifen_list'] = 'user_jifen_log.php?act=list';
+$modules['08_members']['12_user_xuanguang_list'] = 'user_xuanguang_log.php?act=list';
 
 $modules['08_members']['12_user_card_list'] = 'usercard.php?act=card_list';
 

@@ -49,6 +49,8 @@ $_LANG['goto_goods'] = '返回商品详情页';
 $_LANG['11_order_export'] = '导出订单';
 $_LANG['12_users_export'] = '导出会员列表';
 $_LANG['12_user_address_list'] = '收货地址列表';
+$_LANG['12_user_jifen_list'] = '积分每日统计';
+$_LANG['12_user_xuanguang_list'] = '宣广费每日统计';
 
 $_LANG['12_user_card_list'] = '购卡列表';
 
@@ -61,7 +63,7 @@ $_LANG['city'] = '市';
 $_LANG['area'] = '区';
 $_LANG['app_name'] = 'ECSHOP';
 $_LANG['cp_home'] = '管理中心';
-$_LANG['copyright'] = '版权所有 &copy; 2005-2017 上海商创网络科技有限公司，并保留所有权利。';
+$_LANG['copyright'] = '版权所有 &copy; 2005-2017 xxxx有限公司，并保留所有权利。';
 $_LANG['query_info'] = '共执行 %d 个查询，用时 %s 秒';
 $_LANG['memory_info'] = '，内存占用 %0.3f MB';
 $_LANG['gzip_enabled'] = '，Gzip 已启用';
@@ -440,7 +442,7 @@ $_LANG['catname_exist'] = '已存在相同的分类名称!';
 $_LANG['brand_name_exist'] = '已存在相同的品牌名称!';
 $_LANG['alipay_login'] = '<a href="https://www.alipay.com/user/login.htm?goto=https%3A%2F%2Fwww.alipay.com%2Fhimalayas%2Fpracticality_profile_edit.htm%3Fmarket_type%3Dfrom_agent_contract%26customer_external_id%3D%2BC4335319945672464113" target="_blank">立即免费申请支付接口权限</a>';
 $_LANG['alipay_look'] = '<a href=\\"https://www.alipay.com/himalayas/practicality.htm\\" target=\\"_blank\\">请申请成功后登录支付宝账户查看</a>';
-$_LANG['dsc_admin'] = '大商创管理中心';
+$_LANG['dsc_admin'] = '乐福来创管理中心';
 $_LANG['self'] = '自营';
 $_LANG['steps_shop_name'] = '店铺名称';
 $_LANG['steps_shop_type'] = '店铺类型';

@@ -70,6 +70,20 @@
                                     </div>
                                 </div>
                                 <div class="item">
+                                    <div class="label">支付密码：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="paypwd" class="text" autocomplete="off" id="paypwd"/>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">支付密码确认：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="confirm_paypwd" class="text" autocomplete="off" id="confirm_paypwd"/>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
                                     <div class="label"><?php echo $this->_var['lang']['user_rank']; ?>：</div>
                                     <div class="label_value">
                                         <div id="user_grade" class="imitate_select select_w320">
@@ -531,7 +545,11 @@ if ($this->_foreach['address']['total'] > 0):
 					},
 					confirm_password:{
 						equalTo:"#password"
-					}
+					},
+                    confirm_paypwd:{
+					    equalTo:"#paypwd"
+                    }
+
 				},
 				messages:{
 					email:{
@@ -540,7 +558,10 @@ if ($this->_foreach['address']['total'] > 0):
 					},
 					confirm_password : {
 						equalTo:'<i class="icon icon-exclamation-sign"></i>'+password_not_same
-					}
+					},
+                    confirm_paypwd : {
+                        equalTo:'<i class="icon icon-exclamation-sign"></i>'+ password_not_same
+                    }
 				}
 			});
 			<?php endif; ?>

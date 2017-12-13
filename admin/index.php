@@ -210,7 +210,6 @@ if ($_REQUEST['act'] == '') {
 		$menu_type = '';
 		$nav_top[$mkey]['label'] = $_LANG[$mkey];
 		$nav_top[$mkey]['type'] = $mkey;
-
 		if (!empty($mval)) {
 			$menu_type = explode(',', $mval);
 

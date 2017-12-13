@@ -253,7 +253,8 @@ class Account extends \app\http\base\controllers\Frontend {
 		$res = $this->db->getAll($sql);
 
 		foreach ($res as $row) {
-			$row['change_time'] = local_date($GLOBALS['_CFG']['date_format'], $row['change_time']);
+			//$row['change_time'] = local_date($GLOBALS['_CFG']['date_format'], $row['change_time']);
+			$row['change_time'] = date('Y-m-d H:i:s',$row['change_time']);
 			// $row['type'] = 0 < $row[$account_type] ? '+' : '';
 			$row['short_change_desc'] = sub_str($row['change_desc'], 60);
 			$temp = explode(',', $row['short_change_desc']);
@@ -325,7 +326,6 @@ class Account extends \app\http\base\controllers\Frontend {
 		$surplus_id = (isset($_GET['id']) ? intval($_GET['id']) : 2);
 		$account = get_surplus_info($surplus_id);
 		$payment_list = get_online_payment_list(false);
-
 
 		foreach ($payment_list as $key => $val) {
 			if (!file_exists(ADDONS_PATH . 'payment/' . $val['pay_code'] . '.php')) {
@@ -739,9 +739,13 @@ class Account extends \app\http\base\controllers\Frontend {
 	public function actionReturnXianjin() {
 		if (IS_POST) {
 			$amount = floatval($_POST['amount']);
+			if($amount<=0){
+				show_message('转账金额请输入数字');
+			}
 			$return_username = trim($_POST['return_username']);
 			$paypwd = trim($_POST['paypwd']);
 			$res = dao('users_paypwd')->field('pay_password,ec_salt')->where(array('user_id' => $this->user_id))->find();
+			$user_info = dao('users')->where('user_id',$this->user_id)->find();
 			$new_password = md5(md5($paypwd) . $res['ec_salt']);
 			if ($new_password != $res['pay_password']) {
 				show_message('支付密码不正确');
@@ -757,10 +761,11 @@ class Account extends \app\http\base\controllers\Frontend {
 			if ($return_info['user_id'] == $this->user_id) {
 				show_message('自己不能转给自己！');
 			}
+			$desc = '用户('.$user_info['user_name'].')'.'转给'.'('.$return_info['nick_name'].')'.$amount.'元';
 			//扣除金额，增加金额
-			log_account_change($this->user_id, -$amount, 0, 0, 0, '【现金积分转让】现金积分转出', 54);
+			log_account_change($this->user_id, -$amount, 0, 0, 0, '【现金积分转让】现金积分转出。'.$desc, 54);
 
-			log_account_change($return_info['user_id'], $amount, 0, 0, 0, '【现金积分转让】现金积分转入', 54);
+			log_account_change($return_info['user_id'], $amount, 0, 0, 0, '【现金积分转让】现金积分转入 。'.$desc, 54);
 
 			show_message('转让成功', '', url('user/account/detail'), 'info');
 		}
@@ -773,8 +778,14 @@ class Account extends \app\http\base\controllers\Frontend {
 	}
 
 	public function actionReturnZengZhi() {
+
 		if (IS_POST) {
 			$amount = floatval($_POST['amount']);
+			if($amount <= 0){
+				show_message('转账金额请输入数字');
+
+			}
+			$user_info = dao('users')->where('user_id',$this->user_id)->find();
 			$return_username = trim($_POST['return_username']);
 			$paypwd = trim($_POST['paypwd']);
 			$res = dao('users_paypwd')->field('pay_password,ec_salt')->where(array('user_id' => $this->user_id))->find();
@@ -793,10 +804,11 @@ class Account extends \app\http\base\controllers\Frontend {
 			if ($return_info['user_id'] == $this->user_id) {
 				show_message('自己不能转给自己！');
 			}
+			$desc = '用户('.$user_info['user_name'].')'.'转给'.'('.$return_info['nick_name'].')'.$amount.'元';
 			//扣除金额，增加金额
-			log_account_change($this->user_id, 0, 0, 0, -$amount, '【增值积分转让】现金积分转出', 54);
+			log_account_change($this->user_id, 0, 0, 0, -$amount, '【增值积分转让】现金积分转出'.$desc, 54);
 
-			log_account_change($return_info['user_id'], 0, 0, 0, $amount, '【增值积分转让】现金积分转入', 54);
+			log_account_change($return_info['user_id'], 0, 0, 0, $amount, '【增值积分转让】现金积分转入'.$desc, 54);
 
 			show_message('转让成功', '', url('user/account/detail'), 'info');
 		}
@@ -921,13 +933,20 @@ class Account extends \app\http\base\controllers\Frontend {
 			$payment_info['pay_fee'] = pay_fee($surplus['payment_id'], $order['surplus_amount'], 0);
 			$order['order_amount'] = $amount + $payment_info['pay_fee'];
 			$order['log_id'] = insert_pay_log($surplus['rec_id'], $order['order_amount'], $type = PAY_SURPLUS, 0);
-
 			if (!file_exists(ADDONS_PATH . 'payment/' . $payment_info['pay_code'] . '.php')) {
 				// unset($payment_info['pay_code']);
 				// ecs_header('Location: ' . url('user/account/log'));
-				include_once ADDONS_PATH . 'payment/' . $payment_info['pay_code'] . '.php';
+
+				/*
+				 * 修改者@QZH
+				 * STSART  以后微信支付，支付宝开启后此处也无需修改
+				 * */
+				/*include_once ADDONS_PATH . 'payment/' . $payment_info['pay_code'] . '.php';
 				$pay_obj = new $payment_info['pay_code']();
-				$payment_info['pay_button'] = $pay_obj->get_code($order, $payment);
+				$payment_info['pay_button'] = $pay_obj->get_code($order, $payment);*/
+
+				/*END*/
+				$payment_info['pay_button'] = '请支付';
 				$this->assign('payment', $payment_info);
 				$this->assign('pay_fee', price_format($payment_info['pay_fee'], false));
 				$this->assign('amount', price_format($amount, false));
@@ -1372,6 +1391,86 @@ class Account extends \app\http\base\controllers\Frontend {
 		$this->assign('vid', $vid);
 		$this->assign('page_title', L('pay_vc'));
 		$this->display();
+	}
+
+	/*
+	 * 店长今日销售量
+	 * @QZH
+	 *
+	 * */
+
+    public function actionTodaysell()
+    {
+
+        //记录状态 0 无状态 1银卡 2 金卡 3 钻卡 4 白金卡 5 翡翠卡 6销售卡 -7 失效 -1 完结
+
+        if(IS_AJAX){
+            $type = I('status');
+            $where = '';
+            $where = 'user_status = 1 && belong_shop = '.$this->user_id;
+            //获取当天的年份
+            $y = date("Y");
+
+            //获取当天的月份
+            $m = date("m");
+
+            //获取当天的号数
+            $d = date("d");
+            $start = mktime(0,0,0,$m,$d,$y);
+            $end = $start + 24*60*60;
+            if($type == 1){
+
+                $start  = $start - 7*24*60*60;
+            }elseif($type == 2){
+                $start = $start - 30*24*60*60;
+            }
+            $where .= ' && add_time <'.$end.' && add_time >'.$start;
+           $data = dao('users_every')->where($where)->select();
+            $record_count = dao('users_every')->where(array('user_status'=>1,'belong_shop'=>$this->user_id))->count();
+           if(!empty($data)){
+
+               $page = I('page', 1, 'intval');
+               $offset = 10;
+               $page_size = ceil($record_count / $offset);
+               foreach ($data as &$item) {
+                   if($item['belong_shop'] != 0){
+                       $res = dao('users')->where(array('user_id'=>$item['belong_shop']))->field('nick_name')->find();
+                       $item['shop_name'] = $res['nick_name'];
+                       switch ($item['status']){
+                           case 1:
+                               $item['kb'] = '银卡';
+                               break;
+                           case 2:
+                               $item['kb'] = '金卡';
+                               break;
+                           case 3:
+                               $item['kb'] = '钻卡';
+                               break;
+                           case 4:
+                               $item['kb'] = '白金卡';
+                               break;
+                           case 5:
+                               $item['kb'] = '翡翠卡';
+                               break;
+                           case 6:
+                               $item['kb'] = '销售卡';
+                               break;
+                           default:$item['kb'] = '销售卡';
+                       }
+
+
+                   }
+               }
+
+               exit(json_encode(array('order_list' => $data, 'totalPage' => $page_size, 'count' => $record_count)));
+           }
+
+        }
+
+        $this->display();
+
+
+
 	}
 }
 

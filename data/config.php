@@ -10,7 +10,7 @@ $db_name = "huanyu";
 $db_user = "root";
 
 // database password
-$db_pass = "root";
+$db_pass = "123456";
 
 // table prefix
 $prefix = "dsc_";

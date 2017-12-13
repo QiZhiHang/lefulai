@@ -283,7 +283,7 @@ if ($_REQUEST['act'] == 'list') {
 		sys_msg('普通会员注册必须填写推荐人', 1);
 	}
 	if (empty($nick_name) || empty($paypwd)) {
-		sys_msg('真实姓名和二级面不能为空', 1);
+		sys_msg('真实姓名和二级密码不能为空', 1);
 	}
 
 	if ($is_shop == 1) {
@@ -526,6 +526,7 @@ if ($_REQUEST['act'] == 'list') {
 	admin_priv('users_manage');
 	$username = (empty($_POST['username']) ? '' : trim($_POST['username']));
 	$password = (empty($_POST['password']) ? '' : trim($_POST['password']));
+	$paypwd = (empty($_POST['paypwd']) ? '' : trim($_POST['paypwd']));
 	$email = (empty($_POST['email']) ? '' : trim($_POST['email']));
 	$sex = (empty($_POST['sex']) ? 0 : intval($_POST['sex']));
 	$sex = (in_array($sex, array(0, 1, 2)) ? $sex : 0);
@@ -549,6 +550,13 @@ if ($_REQUEST['act'] == 'list') {
 
 	if (!empty($password)) {
 		$sql = 'UPDATE ' . $ecs->table('users') . 'SET `ec_salt`=\'0\' WHERE user_name= \'' . $username . '\'';
+		$db->query($sql);
+	}
+	if (!empty($paypwd)) {
+		$sql = 'SELECT * FROM '.$ecs->table('users_paypwd'). ' WHERE user_id = '.$id;
+		$data = $db->getRow($sql);
+		$payp = md5(md5($paypwd).$data['ec_salt']);
+		$sql = 'UPDATE ' . $ecs->table('users_paypwd') . ' SET pay_password = '. "'$payp'". ' WHERE user_id = '.$id;
 		$db->query($sql);
 	}
 
