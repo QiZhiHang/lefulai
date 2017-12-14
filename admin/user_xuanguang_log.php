@@ -3,15 +3,12 @@
 function user_address_list_log()
 {
 	$result = get_filter();
-
 	if ($result === false) {
 
 		//$filter['consignee'] = empty($_REQUEST['consignee']) ? '' : trim($_REQUEST['consignee']);
 		/*if (isset($_REQUEST['is_ajax']) && ($_REQUEST['is_ajax'] == 1)) {
 			$filter['consignee'] = json_str_iconv($filter['consignee']);
 		}*/
-
-
 		$y = date("Y");
 		//获取当天的月份
 		$m = date("m");
@@ -19,9 +16,16 @@ function user_address_list_log()
 		$d = date("d");
 		$start = mktime(0,0,0,$m,$d,$y);
 		$end = $start + 24*60*60;
-		$filter['change_type'] = empty($_REQUEST['change_type']) ? '57' : trim($_REQUEST['change_type']);
-		$filter['start_data'] = empty($_REQUEST['start_data']) ? $start : (trim(strtotime($_REQUEST['start_data']))+24*60*60);
-		$filter['end_date'] = empty($_REQUEST['end_date']) ? $end : (trim(strtotime($_REQUEST['end_date']))+24*60*60);
+		if(!is_numeric($_REQUEST['start_data']) && isset($_REQUEST['start_data'])){
+			$_REQUEST['start_data'] = strtotime($_REQUEST['start_data']);
+		}
+		if(!is_numeric($_REQUEST['end_date']) && isset($_REQUEST['end_date'])){
+			$_REQUEST['end_date'] = strtotime($_REQUEST['end_date']);
+		}
+
+		$filter['change_type'] = empty($_REQUEST['change_type']) ? '57' : (trim($_REQUEST['change_type']));
+		$filter['start_data'] = empty($_REQUEST['start_data']) ? $start : (trim($_REQUEST['start_data']));
+		$filter['end_date'] = empty($_REQUEST['end_date']) ? $end : (trim($_REQUEST['end_date']));
 		$ex_where = ' WHERE change_type =  '.$filter['change_type'];
 		if ($filter['start_data'] || $filter['end_date']) {
 
@@ -34,8 +38,7 @@ function user_address_list_log()
 		/*$sql = 'SELECT concat(IFNULL(c.region_name, \'\'), \'  \', IFNULL(p.region_name, \'\'), ' . '\'  \', IFNULL(t.region_name, \'\'), \'  \', IFNULL(d.region_name, \'\')) AS region, u.user_name, a.address_id, a.user_id, a.consignee, a.email, a.country, a.province, a.city, a.district, a.address, a.zipcode, a.tel, a.mobile, a.sign_building, a.best_time, a.audit, a.userUp_time ' . ' FROM ' . $GLOBALS['ecs']->table('user_address') . ' as a left join' . $GLOBALS['ecs']->table('users') . ' as u on a.user_id = u.user_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS c ON a.country = c.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS p ON a.province = p.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS t ON a.city = t.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS d ON a.district = d.region_id ' . $ex_where . ' ORDER by ' . $filter['sort_by'] . ' ' . $filter['sort_order'] . ' LIMIT ' . $filter['start'] . ',' . $filter['page_size'];
 		set_filter($filter, $sql);*/
 		//获取当天的年份
-
-		$sql = 'SELECT * FROM '.$GLOBALS['ecs']->table('account_log').$ex_where.' LIMIT '. $filter['start'] . ',' . $filter['page_size'];
+		$sql = 'SELECT * FROM '.$GLOBALS['ecs']->table('account_log').$ex_where.' ORDER BY change_time desc LIMIT '. $filter['start'] . ',' . $filter['page_size'];
 		set_filter($filter, $sql);
 
 	}
@@ -45,7 +48,6 @@ function user_address_list_log()
 
 		$filter = $result['filter'];
 	}
-
 	$address_list = $GLOBALS['db']->getAll($sql);
 	foreach ($address_list as &$v){
 		$v['change_time'] = date('Y-m-d H:i:s',$v['change_time']);
@@ -111,7 +113,6 @@ if ($_REQUEST['act'] == 'list') {
 		$ranks[$row['rank_id']] = $row['rank_name'];
 	}*/
 	$address_list = user_address_list_log();
-
 	$smarty->assign('address_list', $address_list['address_list']);
 	$smarty->assign('filter', $address_list['filter']);
 	$smarty->assign('record_count', $address_list['record_count']);

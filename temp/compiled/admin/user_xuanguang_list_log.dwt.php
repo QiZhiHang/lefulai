@@ -2,7 +2,6 @@
 <!doctype html>
 <html>
 <head><?php echo $this->fetch('library/admin_html_head.lbi'); ?></head>
-
 <body class="iframe_body">
 	<div class="warpper">
     	<div class="title">会员 - <?php echo $this->_var['ur_here']; ?></div>
@@ -22,11 +21,7 @@
                     	<div class="refresh_span">刷新 - 共<?php echo $this->_var['record_count']; ?>条记录</div>
                     </div>
                     <form action="javascript:searchAddress()" name="searchForm">
-
-
-
-                                <!--<input type="text" name="user_name" class="text nofocus " placeholder="<?php echo $this->_var['lang']['user_name']; ?>" autocomplete="off" /><input type="submit" value="" class="not_btn" />-->
-
+                        <!--<input type="text" name="user_name" class="text nofocus " placeholder="<?php echo $this->_var['lang']['user_name']; ?>" autocomplete="off" /><input type="submit" value="" class="not_btn" />-->
 
                     </form>
                 </div>

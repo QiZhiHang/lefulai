@@ -2,7 +2,6 @@
 <!doctype html>
 <html>
 <head>{include file ='library/admin_html_head.lbi'}</head>
-
 <body class="iframe_body">
 	<div class="warpper">
     	<div class="title">会员 - {$ur_here}</div>
@@ -22,11 +21,7 @@
                     	<div class="refresh_span">刷新 - 共{$record_count}条记录</div>
                     </div>
                     <form action="javascript:searchAddress()" name="searchForm">
-
-
-
-                                <!--<input type="text" name="user_name" class="text nofocus " placeholder="{$lang.user_name}" autocomplete="off" /><input type="submit" value="" class="not_btn" />-->
-
+                        <!--<input type="text" name="user_name" class="text nofocus " placeholder="{$lang.user_name}" autocomplete="off" /><input type="submit" value="" class="not_btn" />-->
 
                     </form>
                 </div>
@@ -43,10 +38,7 @@
                                     <th width="10%"><div class="tDiv">返现金额</div></th>
                                     <th width="20%"><div class="tDiv">执行时间</div></th>
                                     <th width="40%"><div class="tDiv">执行描述</div></th>
-                                    <!--<th width="8%"><div class="tDiv">{$lang.telephone}</div></th>
-                                    <th width="8%"><div class="tDiv">{$lang.phone}</div></th>
-                                    <th width="12%"><div class="tDiv">{$lang.email}</div></th>
-                                    <th width="10%"><div class="tDiv">{$lang.uers_updata_time}</div></th>-->
+
                                     <th width="11%"><div class="tDiv">操作</div></th>
                                 </tr>
                             </thead>
@@ -59,10 +51,6 @@
                                     <td><div class="tDiv">{if $address.change_type == 57}{$address.pay_points|escape}{/if}</div></td>
                                     <td><div class="tDiv">{$address.change_time}</div></td>
                                     <td><div class="tDiv">{$address.change_desc|escape}</div></td>
-                                    <!--<td><div class="tDiv">{$address.tel|escape}</div></td>
-                                    <td><div class="tDiv">{$address.mobile|escape}</div></td>
-                                    <td><div class="tDiv">{$address.email|escape}</div></td>
-                                    <td><div class="tDiv">{$address.userUp_time|escape}</div></td>-->
                                     <td class="handle">
                                         <div class="tDiv a2">
                                             <!--<a href="user_address_log.php?act=edit&address_id={$address.address_id}&user_id={$address.user_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>-->
