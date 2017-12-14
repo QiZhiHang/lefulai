@@ -1,11 +1,11 @@
-{if $full_page}
+<?php if ($this->_var['full_page']): ?>
 <!doctype html>
 <html>
-<head>{include file ='library/admin_html_head.lbi'}</head>
+<head><?php echo $this->fetch('library/admin_html_head.lbi'); ?></head>
 
 <body class="iframe_body">
 	<div class="warpper">
-    	<div class="title">会员 - {$ur_here}</div>
+    	<div class="title">会员 - <?php echo $this->_var['ur_here']; ?></div>
         <div class="content">
         	<div class="explanation" id="explanation">
             	<div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
@@ -19,13 +19,13 @@
             	<div class="common-head">
                    	<div class="refresh ml0">
                     	<div class="refresh_tit" title="刷新数据"><i class="icon icon-refresh"></i></div>
-                    	<div class="refresh_span">刷新 - 共{$record_count}条记录</div>
+                    	<div class="refresh_span">刷新 - 共<?php echo $this->_var['record_count']; ?>条记录</div>
                     </div>
                     <form action="javascript:searchAddress()" name="searchForm">
 
 
 
-                                <!--<input type="text" name="user_name" class="text nofocus " placeholder="{$lang.user_name}" autocomplete="off" /><input type="submit" value="" class="not_btn" />-->
+                                <!--<input type="text" name="user_name" class="text nofocus " placeholder="<?php echo $this->_var['lang']['user_name']; ?>" autocomplete="off" /><input type="submit" value="" class="not_btn" />-->
 
 
                     </form>
@@ -33,7 +33,7 @@
                 <div class="common-content">
                     <form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
                 	<div class="list-div"  id="listDiv">
-                        {/if}
+                        <?php endif; ?>
                     	<table cellpadding="0" cellspacing="0" border="0">
                         	<thead>
                             	<tr>
@@ -43,36 +43,38 @@
                                     <th width="10%"><div class="tDiv">返现金额</div></th>
                                     <th width="20%"><div class="tDiv">执行时间</div></th>
                                     <th width="40%"><div class="tDiv">执行描述</div></th>
-                                    <!--<th width="8%"><div class="tDiv">{$lang.telephone}</div></th>
-                                    <th width="8%"><div class="tDiv">{$lang.phone}</div></th>
-                                    <th width="12%"><div class="tDiv">{$lang.email}</div></th>
-                                    <th width="10%"><div class="tDiv">{$lang.uers_updata_time}</div></th>-->
+                                    <!--<th width="8%"><div class="tDiv"><?php echo $this->_var['lang']['telephone']; ?></div></th>
+                                    <th width="8%"><div class="tDiv"><?php echo $this->_var['lang']['phone']; ?></div></th>
+                                    <th width="12%"><div class="tDiv"><?php echo $this->_var['lang']['email']; ?></div></th>
+                                    <th width="10%"><div class="tDiv"><?php echo $this->_var['lang']['uers_updata_time']; ?></div></th>-->
                                     <th width="11%"><div class="tDiv">操作</div></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {foreach from=$address_list item=address}
+                                <?php $_from = $this->_var['address_list']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('', 'address');if (count($_from)):
+    foreach ($_from AS $this->_var['address']):
+?>
                             	<tr>
-                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="{$address.address_id}" id="checkbox_{$address.address_id}" /><label for="checkbox_{$address.address_id}" class="checkbox_stars"></label></div></td>
-                                    <td><div class="tDiv">{$address.log_id}</div></td>
-                                    <td><div class="tDiv">{$address.user_id|escape}</div></td>
-                                    <td><div class="tDiv">{if $address.change_type == 57}{$address.pay_points|escape}{/if}</div></td>
-                                    <td><div class="tDiv">{$address.change_time}</div></td>
-                                    <td><div class="tDiv">{$address.change_desc|escape}</div></td>
-                                    <!--<td><div class="tDiv">{$address.tel|escape}</div></td>
-                                    <td><div class="tDiv">{$address.mobile|escape}</div></td>
-                                    <td><div class="tDiv">{$address.email|escape}</div></td>
-                                    <td><div class="tDiv">{$address.userUp_time|escape}</div></td>-->
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="<?php echo $this->_var['address']['address_id']; ?>" id="checkbox_<?php echo $this->_var['address']['address_id']; ?>" /><label for="checkbox_<?php echo $this->_var['address']['address_id']; ?>" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv"><?php echo $this->_var['address']['log_id']; ?></div></td>
+                                    <td><div class="tDiv"><?php echo htmlspecialchars($this->_var['address']['user_id']); ?></div></td>
+                                    <td><div class="tDiv"><?php if ($this->_var['address']['change_type'] == 57): ?><?php echo htmlspecialchars($this->_var['address']['pay_points']); ?><?php endif; ?></div></td>
+                                    <td><div class="tDiv"><?php echo $this->_var['address']['change_time']; ?></div></td>
+                                    <td><div class="tDiv"><?php echo htmlspecialchars($this->_var['address']['change_desc']); ?></div></td>
+                                    <!--<td><div class="tDiv"><?php echo htmlspecialchars($this->_var['address']['tel']); ?></div></td>
+                                    <td><div class="tDiv"><?php echo htmlspecialchars($this->_var['address']['mobile']); ?></div></td>
+                                    <td><div class="tDiv"><?php echo htmlspecialchars($this->_var['address']['email']); ?></div></td>
+                                    <td><div class="tDiv"><?php echo htmlspecialchars($this->_var['address']['userUp_time']); ?></div></td>-->
                                     <td class="handle">
                                         <div class="tDiv a2">
-                                            <!--<a href="user_address_log.php?act=edit&address_id={$address.address_id}&user_id={$address.user_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>-->
-                                            <!--<a href="javascript:confirm_redirect('是否删除此条记录', 'user_xuanguang_log.php?act=remove&id={$address.log_id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.remove}</a>-->
+                                            <!--<a href="user_address_log.php?act=edit&address_id=<?php echo $this->_var['address']['address_id']; ?>&user_id=<?php echo $this->_var['address']['user_id']; ?>" title="<?php echo $this->_var['lang']['edit']; ?>" class="btn_edit"><i class="icon icon-edit"></i><?php echo $this->_var['lang']['edit']; ?></a>-->
+                                            <!--<a href="javascript:confirm_redirect('是否删除此条记录', 'user_xuanguang_log.php?act=remove&id=<?php echo $this->_var['address']['log_id']; ?>')" title="<?php echo $this->_var['lang']['remove']; ?>" class="btn_trash"><i class="icon icon-trash"></i><?php echo $this->_var['lang']['remove']; ?></a>-->
                                         </div>
                                     </td>
                                 </tr>
-                                {foreachelse}
-								<tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
-								{/foreach}
+                                <?php endforeach; else: ?>
+								<tr><td class="no-records" colspan="11"><?php echo $this->_var['lang']['no_records']; ?></td></tr>
+								<?php endif; unset($_from); ?><?php $this->pop_vars();; ?>
                             </tbody>
                             <tfoot>
                             	<tr>
@@ -80,17 +82,17 @@
                                         <div class="tDiv">
                                             <div class="tfoot_btninfo">
                                                 <input type="hidden" name="act" value="batch_remove" />
-                                                <input type="submit" value="{$lang.drop}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                                <input type="submit" value="<?php echo $this->_var['lang']['drop']; ?>" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
                                             </div>
                                             <div class="list-page">
-                                                {include file="library/page.lbi"}
+                                                <?php echo $this->fetch('library/page.lbi'); ?>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                             </tfoot>
                         </table>
-                        {if $full_page}
+                        <?php if ($this->_var['full_page']): ?>
                     </div>
                     </form>
                 </div>
@@ -133,17 +135,19 @@
             </div>
         </div>
     </div>
- {include file ='library/pagefooter.lbi'}
+ <?php echo $this->fetch('library/pagefooter.lbi'); ?>
     <script type="text/javascript">
-    listTable.recordCount = '{$record_count}';
-    listTable.pageCount = '{$page_count}';
+    listTable.recordCount = '<?php echo $this->_var['record_count']; ?>';
+    listTable.pageCount = '<?php echo $this->_var['page_count']; ?>';
 
-    {foreach from=$filter item=item key=key}
-    listTable.filter.{$key} = '{$item}';
-    {/foreach}
+    <?php $_from = $this->_var['filter']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('key', 'item');if (count($_from)):
+    foreach ($_from AS $this->_var['key'] => $this->_var['item']):
+?>
+    listTable.filter.<?php echo $this->_var['key']; ?> = '<?php echo $this->_var['item']; ?>';
+    <?php endforeach; endif; unset($_from); ?><?php $this->pop_vars();; ?>
     function confirm_bath()
     {
-        cfm = '{$lang.list_remove_confirm}';
+        cfm = '<?php echo $this->_var['lang']['list_remove_confirm']; ?>';
         return confirm(cfm);
     }
 
@@ -191,4 +195,4 @@ $.gjSearch("-240px");  //高级搜索
     </script>
 </body>
 </html>
-{/if}
+<?php endif; ?>

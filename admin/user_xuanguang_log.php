@@ -5,46 +5,57 @@ function user_address_list_log()
 	$result = get_filter();
 
 	if ($result === false) {
-		$filter['consignee'] = empty($_REQUEST['consignee']) ? '' : trim($_REQUEST['consignee']);
-		if (isset($_REQUEST['is_ajax']) && ($_REQUEST['is_ajax'] == 1)) {
+
+		//$filter['consignee'] = empty($_REQUEST['consignee']) ? '' : trim($_REQUEST['consignee']);
+		/*if (isset($_REQUEST['is_ajax']) && ($_REQUEST['is_ajax'] == 1)) {
 			$filter['consignee'] = json_str_iconv($filter['consignee']);
+		}*/
+
+
+		$y = date("Y");
+		//获取当天的月份
+		$m = date("m");
+		//获取当天的号数
+		$d = date("d");
+		$start = mktime(0,0,0,$m,$d,$y);
+		$end = $start + 24*60*60;
+		$filter['change_type'] = empty($_REQUEST['change_type']) ? '57' : trim($_REQUEST['change_type']);
+		$filter['start_data'] = empty($_REQUEST['start_data']) ? $start : (trim(strtotime($_REQUEST['start_data']))+24*60*60);
+		$filter['end_date'] = empty($_REQUEST['end_date']) ? $end : (trim(strtotime($_REQUEST['end_date']))+24*60*60);
+		$ex_where = ' WHERE change_type =  '.$filter['change_type'];
+		if ($filter['start_data'] || $filter['end_date']) {
+
+			$ex_where .= ' && change_time <'.$filter['end_date'].' && change_time >'.$filter['start_data'];
 		}
 
-		$filter['user_name'] = empty($_REQUEST['user_name']) ? '' : trim($_REQUEST['user_name']);
-		$filter['mobile'] = empty($_REQUEST['mobile']) ? '' : trim($_REQUEST['mobile']);
-		$filter['sort_by'] = 'a.address_id';
-		$filter['sort_order'] = empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
-		$ex_where = ' WHERE 1 ';
 
-		if ($filter['consignee']) {
-			$ex_where .= ' AND a.consignee = \'' . $filter['consignee'] . '\'';
-		}
-
-		if ($filter['user_name']) {
-			$ex_where .= ' AND u.user_name = \'' . $filter['user_name'] . '\'';
-		}
-
-		if ($filter['mobile']) {
-			$ex_where .= ' AND a.mobile = \'' . $filter['mobile'] . '\'';
-		}
-
-		$filter['record_count'] = $GLOBALS['db']->getOne('SELECT COUNT(*) FROM ' . $GLOBALS['ecs']->table('user_address') . ' as a ' . 'left join ' . $GLOBALS['ecs']->table('users') . ' as u on a.user_id = u.user_id ' . $ex_where);
+		$filter['record_count'] = $GLOBALS['db']->getOne('SELECT COUNT(*) FROM ' . $GLOBALS['ecs']->table('account_log')  . $ex_where);
 		$filter = page_and_size($filter);
-		$sql = 'SELECT concat(IFNULL(c.region_name, \'\'), \'  \', IFNULL(p.region_name, \'\'), ' . '\'  \', IFNULL(t.region_name, \'\'), \'  \', IFNULL(d.region_name, \'\')) AS region, u.user_name, a.address_id, a.user_id, a.consignee, a.email, a.country, a.province, a.city, a.district, a.address, a.zipcode, a.tel, a.mobile, a.sign_building, a.best_time, a.audit, a.userUp_time ' . ' FROM ' . $GLOBALS['ecs']->table('user_address') . ' as a left join' . $GLOBALS['ecs']->table('users') . ' as u on a.user_id = u.user_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS c ON a.country = c.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS p ON a.province = p.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS t ON a.city = t.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS d ON a.district = d.region_id ' . $ex_where . ' ORDER by ' . $filter['sort_by'] . ' ' . $filter['sort_order'] . ' LIMIT ' . $filter['start'] . ',' . $filter['page_size'];
+		/*$sql = 'SELECT concat(IFNULL(c.region_name, \'\'), \'  \', IFNULL(p.region_name, \'\'), ' . '\'  \', IFNULL(t.region_name, \'\'), \'  \', IFNULL(d.region_name, \'\')) AS region, u.user_name, a.address_id, a.user_id, a.consignee, a.email, a.country, a.province, a.city, a.district, a.address, a.zipcode, a.tel, a.mobile, a.sign_building, a.best_time, a.audit, a.userUp_time ' . ' FROM ' . $GLOBALS['ecs']->table('user_address') . ' as a left join' . $GLOBALS['ecs']->table('users') . ' as u on a.user_id = u.user_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS c ON a.country = c.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS p ON a.province = p.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS t ON a.city = t.region_id ' . 'LEFT JOIN ' . $GLOBALS['ecs']->table('region') . ' AS d ON a.district = d.region_id ' . $ex_where . ' ORDER by ' . $filter['sort_by'] . ' ' . $filter['sort_order'] . ' LIMIT ' . $filter['start'] . ',' . $filter['page_size'];
+		set_filter($filter, $sql);*/
+		//获取当天的年份
+
+		$sql = 'SELECT * FROM '.$GLOBALS['ecs']->table('account_log').$ex_where.' LIMIT '. $filter['start'] . ',' . $filter['page_size'];
 		set_filter($filter, $sql);
+
 	}
 	else {
+
 		$sql = $result['sql'];
+
 		$filter = $result['filter'];
 	}
 
 	$address_list = $GLOBALS['db']->getAll($sql);
-	$count = count($address_list);
+	foreach ($address_list as &$v){
+		$v['change_time'] = date('Y-m-d H:i:s',$v['change_time']);
+	}
+	/*$count = count($address_list);
 
 	for ($i = 0; $i < $count; $i++) {
 		$address_list[$i]['best_time'] = $address_list[$i]['best_time'];
 		$address_list[$i]['userUp_time'] = local_date('Y-m-d H:i:s', $address_list[$i]['userUp_time']);
-	}
+	}*/
 
 	$arr = array('address_list' => $address_list, 'filter' => $filter, 'page_count' => $filter['page_count'], 'record_count' => $filter['record_count']);
 	return $arr;
@@ -92,17 +103,15 @@ require dirname(__FILE__) . '/includes/init.php';
 
 if ($_REQUEST['act'] == 'list') {
 	admin_priv('users_manage');
-	$sql = 'SELECT * FROM ';
+	/*$sql = 'SELECT rank_id, rank_name, min_points FROM ' . $ecs->table('user_rank') . ' ORDER BY min_points ASC ';
 	$rs = $db->query($sql);
 	$ranks = array();
 
 	while ($row = $db->FetchRow($rs)) {
 		$ranks[$row['rank_id']] = $row['rank_name'];
-	}
-
-	$smarty->assign('user_ranks', $ranks);
-	$smarty->assign('ur_here', $_LANG['03_users_list']);
+	}*/
 	$address_list = user_address_list_log();
+
 	$smarty->assign('address_list', $address_list['address_list']);
 	$smarty->assign('filter', $address_list['filter']);
 	$smarty->assign('record_count', $address_list['record_count']);
@@ -120,7 +129,7 @@ else if ($_REQUEST['act'] == 'query') {
 	$smarty->assign('page_count', $address_list['page_count']);
 	$sort_flag = sort_flag($address_list['filter']);
 	$smarty->assign($sort_flag['tag'], $sort_flag['img']);
-	make_json_result($smarty->fetch('user_address_list_log.dwt'), '', array('filter' => $address_list['filter'], 'page_count' => $address_list['page_count']));
+	make_json_result($smarty->fetch('user_xuanguang_list_log.dwt'), '', array('filter' => $address_list['filter'], 'page_count' => $address_list['page_count']));
 }
 else if ($_REQUEST['act'] == 'edit') {
 	admin_priv('users_manage');
