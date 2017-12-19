@@ -5,9 +5,11 @@
 			<a href="{url('profile/index')}">
 				<div class="user-header">
 					{if $info.user_picture !=='' }
-					<div class="heaer-img"><img src="{$info.user_picture}"></div>
+					<!--<div class="heaer-img"><img src="{$info.user_picture}"></div>-->
+					<div class="heaer-img"><img src="/data/gallery_album/3/original_img/1513298019493173010.jpg"></div>
 					{else}
-					<div class="heaer-img"><img src="{elixir('img/no_image.jpg')}"></div>
+					<!--<div class="heaer-img"><img src="{elixir('img/no_image.jpg')}"></div>-->
+					<div class="heaer-img"><img src="/data/gallery_album/3/original_img/1513298019493173010.jpg"></div>
 					{/if}
 				</div>
 			</a>
@@ -205,7 +207,7 @@
 			{if $user_other_info.is_shop eq 1}
 			<a href="{url('user/account/return_self')}">
 				<label><i class="iconfont icon-disanfang01 safe-icon color-ff7"></i></label>
-				<p class="f-02 col-7">转为现金积分</p>
+				<p class="f-02 col-7">转为增值积分</p>
 			</a>
 			{/if}
 			<a href="{url('user/index/affiliate')}">
@@ -220,15 +222,18 @@
 				<label><i class="iconfont icon-icon01 color-f9c"></i></label>
 				<p class="f-02 col-7">增值积分互转</p>
 			</a>
-			<a href="{url('user/account/insert_card')}">
+			<!--<a href="{url('user/account/insert_card')}">-->
+			<a href="{url('user/index/card?type=1')}">
 				<label><i class="iconfont  icon-qudiandianpumingpianicon color-c78"></i></label>
 				<p class="f-02 col-7">为自己入单</p>
 			</a>
 			{if $user_other_info.is_shop eq 1}
-			<a href="{url('user/account/insert_other_card')}">
+			<!--<a href="{url('user/account/insert_other_card')}">-->
+			<a href="{url('user/index/card?type=2')}">
 				<label><i class="iconfont icon-shangjiaruzhu- color-98"></i></label>
 				<p class="f-02 col-7">为他人入单</p>
 			</a>
+
 			{/if}
 			<a href="{url('user/profile/accountsafe')}">
 				<label><i class="iconfont icon-zhaohuimima safe-icon color-e72"></i></label>
@@ -277,9 +282,13 @@
 				<label><i class="iconfont icon-shangjiaruzhu- color-98"></i></label>
 				<p class="f-02 col-7">注册会员</p>
 			</a>
-			<a href="{url('user/account/todaysell')}">
+			<a href="{url('user/account/dianzhang')}">
 				<label><i class="iconfont icon-zichou color-ff7"></i></label>
-				<p class="f-02 col-7">今日销售</p>
+				<p class="f-02 col-7">店长销售</p>
+			</a>
+			<a href="{url('user/account/my_member')}">
+				<label><i class="iconfont icon-wodetuandui color-f9c"></i></label>
+				<p class="f-02 col-7">店内成员</p>
 			</a>
 			{/if}
 

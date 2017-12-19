@@ -19,12 +19,18 @@ class Profile extends \app\http\base\controllers\Frontend {
 	}
 
 	public function actionIndex() {
+
 		$this->parameter();
-		$sql = 'SELECT user_id,user_name,sex FROM {pre}users WHERE user_id = ' . $this->user_id;
+		$sql = 'SELECT user_id,user_name,sex,parent_id,belong_shop FROM {pre}users WHERE user_id = ' . $this->user_id;
 		$user_info = $this->db->getRow($sql);
 		$user_real = dao('users_real')->where(array('user_id' => $this->user_id))->count();
 		$this->assign('user_real', $user_real);
 		$is_connect_user = is_connect_user($this->user_id);
+
+		$recommend_info = dao('users')->where(array('user_id'=>$user_info['parent_id']))->field('nick_name')->find();
+		$belong_shop = dao('users')->where(array('user_id'=>$user_info['belong_shop']))->field('nick_name')->find();
+		$this->assign('recommend_info',$recommend_info);
+		$this->assign('belong_shop',$belong_shop);
 		$this->assign('is_connect_user', $is_connect_user);
 		$this->assign('user_info', $user_info);
 		$this->assign('user_name', $user_info['user_name']);

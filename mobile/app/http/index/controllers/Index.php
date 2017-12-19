@@ -37,6 +37,11 @@ class Index extends \app\http\base\controllers\Frontend
 		$this->display();
 	}
 
+	/*
+	 *
+	 * 会员卡*/
+
+
 	public function actionAppNav()
 	{
 		$app = (config('shop.wap_index_pro') ? 1 : 0);

@@ -20,45 +20,47 @@
 										<div class="swiper-wrapper">
 											<div class="swiper-slide select-two">
 												<ul class="j-get-one padding-all">
+													{if $member_type == 1}
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(1)"  ><dd><span>一星会员 金额：</span> <em class="t-first">980</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(1)"  ><dd><span>银卡 金额：</span> <em class="t-first">980</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(2)"  ><dd><span>二星会员 金额：</span> <em class="t-first">4900</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(2)"  ><dd><span>金卡 金额：</span> <em class="t-first">4900</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(3)"  ><dd><span>三星会员 金额：</span> <em class="t-first">9800</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(3)"  ><dd><span>钻卡 金额：</span> <em class="t-first">9800</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(4)"  ><dd><span>四星会员 金额：</span> <em class="t-first">14700</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(4)"  ><dd><span>白金 金额：</span> <em class="t-first">14700</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(5)"  ><dd><span>五星会员 金额：</span> <em class="t-first">19600</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(5)"  ><dd><span>翡翠 金额：</span> <em class="t-first">19600</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+													</li>
+													{else}
+													<li class="ect-select">
+														<label class="ts-1" onclick="show(7)"  ><dd><span>一星董事 金额：</span> <em class="t-first">1280</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(7)"  ><dd><span>一星客户 金额：</span> <em class="t-first">1280</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(8)"  ><dd><span>二星董事 金额：</span> <em class="t-first">6400</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(8)"  ><dd><span>二星客户 金额：</span> <em class="t-first">6400</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(9)"  ><dd><span>三星董事 金额：</span> <em class="t-first">12800</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(9)"  ><dd><span>三星客户 金额：</span> <em class="t-first">12800</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(10)"  ><dd><span>四星董事 金额：</span> <em class="t-first">19200</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
 
 													<li class="ect-select">
-														<label class="ts-1" onclick="show(10)"  ><dd><span>四星客户 金额：</span> <em class="t-first">19200</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+														<label class="ts-1" onclick="show(11)"  ><dd><span>五星董事 金额：</span> <em class="t-first">25600</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
 													</li>
-
-													<li class="ect-select">
-														<label class="ts-1" onclick="show(11)"  ><dd><span>五星客户 金额：</span> <em class="t-first">25600</em></dd><i class="fr iconfont icon-gou ts-1"></i></label>
-													</li>
+													{/if}
 												</ul>
 											</div>
 											<div class="swiper-scrollbar"></div>
@@ -91,6 +93,17 @@
 						<div class="box-flex input-text">
                                                     <input class="j-input-text" type="password" placeholder="请填写自己的二级密码" name="paypwd">
 					</div>
+					</div>
+				</section>
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all login-li m-top10">
+						<div class="box-flex input-text">
+							<input class="j-input-text" name="captcha" datatype="*" nullmsg="请输入图片验证码" type="text"
+								   placeholder="请输入验证码"/>
+							<i class="iconfont icon-guanbi1 close-common j-is-null"></i>
+						</div>
+						<img src="{url('captcha/index/index')}" onclick="this.src='{url('captcha/index/index')}'"
+							 height="36" class="ipt-check-btn j-verify-img"/>
 					</div>
 				</section>
                            

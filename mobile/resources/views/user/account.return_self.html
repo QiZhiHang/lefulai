@@ -6,7 +6,7 @@
 					<div class="text-all dis-box j-text-all">
 						<label class="t-remark">转出金额</label>
 						<div class="box-flex input-text">
-                                                    <input class="j-input-text" type="text" placeholder="本次最多可转让金额为{$process_type.pay_points}" name="amount">
+							<input class="j-input-text" type="text" placeholder="本次最多可转让金额为{$process_type.user_money}" name="amount">
 					</div>
 					</div>
 				</section>
@@ -15,20 +15,30 @@
 					<div class="text-all dis-box j-text-all">
 						<label class="t-remark">二级密码</label>
 						<div class="box-flex input-text">
-                                                    <input class="j-input-text" type="password" placeholder="请输入支付密码" name="paypwd">
+                            <input class="j-input-text" type="password" placeholder="请输入支付密码" name="paypwd">
+						</div>
 					</div>
+				</section>
+				<section class="m-top1px margin-lr">
+					<div class="text-all dis-box j-text-all login-li m-top10">
+						<div class="box-flex input-text">
+							<input class="j-input-text" name="captcha" datatype="*" nullmsg="请输入图片验证码" type="text"
+								   placeholder="请输入验证码"/>
+							<i class="iconfont icon-guanbi1 close-common j-is-null"></i>
+						</div>
+						<img src="{url('captcha/index/index')}" onclick="this.src='{url('captcha/index/index')}'"
+							 height="36" class="ipt-check-btn j-verify-img" id="uu"/>
 					</div>
 				</section>
 			
                            
 			</div>
 			<div class="padding-all">
-                            <button type="submit" class="btn-submit br-5 min-btn" name="submit" value="sub">确认</button>
-			</div>
-                 
-                             <!--提现layer-->
-                             <div class="mask-filter-div"></div>
-                             
+				<button type="submit" class="btn-submit br-5 min-btn" name="submit" value="sub">确认</button>
+			</div><!--提现layer-->
+				<div class="mask-filter-div">
+
+				</div>
           </form>
 		</div>
 		<!--引用js-->
@@ -43,6 +53,7 @@
     {include file="float_nav_footer"} 
 
 		<script type="text/javascript">
+
 			function show(pid){
                            $("input[name=payment_id]").val(pid);
                         }           

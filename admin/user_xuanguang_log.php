@@ -48,10 +48,17 @@ function user_address_list_log()
 
 		$filter = $result['filter'];
 	}
+
 	$address_list = $GLOBALS['db']->getAll($sql);
 	foreach ($address_list as &$v){
 		$v['change_time'] = date('Y-m-d H:i:s',$v['change_time']);
+		if($v['change_type'] == 57){
+			if($v['pay_points'] > 0){
+				$filter['shouyi'] += $v['pay_points'];
+			}
+		}
 	}
+
 	/*$count = count($address_list);
 
 	for ($i = 0; $i < $count; $i++) {
@@ -113,6 +120,7 @@ if ($_REQUEST['act'] == 'list') {
 		$ranks[$row['rank_id']] = $row['rank_name'];
 	}*/
 	$address_list = user_address_list_log();
+
 	$smarty->assign('address_list', $address_list['address_list']);
 	$smarty->assign('filter', $address_list['filter']);
 	$smarty->assign('record_count', $address_list['record_count']);

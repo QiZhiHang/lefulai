@@ -341,10 +341,21 @@ class Account extends \app\http\base\controllers\Frontend {
 	}
 
 	public function actionInsertCard() {
+		$member_type = I('member_type');
 		if (IS_POST) {
 			$choose_type = I('choose_type', 0, 'intval');
 			$re_username = I('re_username', '', 'trim');
 			$paypwd = I('paypwd', '', 'trim');
+			if (empty($_POST['captcha'])) {
+				show_message('请填写验证码', '', '', 'fail');
+
+			}
+
+			$validator = new \Think\Verify();
+
+			if (!$validator->check($_POST['captcha'])) {
+				show_message('验证码错误', '', '', 'fail');
+			}
 
 			if ($choose_type <= 0 || empty($re_username) || empty($paypwd)) {
 				show_message('提交数据不完整！', '', '', 'fail');
@@ -457,7 +468,7 @@ class Account extends \app\http\base\controllers\Frontend {
 				if (intval($amount) > 0 && $status > 0 && $need_return > 0 && $tj_status > 0 && $tj_need_return > 0) {
 					$user_money = get_user_money_info($this->user_id);
 					if ($user_money['user_money'] >= $amount) {
-						log_account_change($this->user_id, -$amount, 0, 0, 0, '【会员购卡】 自己购卡，扣除现金积分', 56);
+						log_account_change($this->user_id, 0, 0, 0, -$amount, '【会员购卡】 自己购卡，扣除增值积分', 56);
 						$data = array();
 						$data['user_id'] = $this->user_id;
 						$data['user_name'] = $user_info['user_name'];
@@ -520,6 +531,7 @@ class Account extends \app\http\base\controllers\Frontend {
 				$this->assign('re_flag',0);
 			}
 		}
+		$this->assign('member_type',$member_type);
 		$this->assign('order', $account);
 		$this->assign('process_type', $surplus_id);
 		$this->assign('page_title', '会员入单');
@@ -527,11 +539,22 @@ class Account extends \app\http\base\controllers\Frontend {
 	}
 
 	public function actionInsertOtherCard() {
+		$member_type = I('member_type');
 		if (IS_POST) {
 			$choose_type = I('choose_type', 0, 'intval');
 			$re_username = I('re_username', '', 'trim');
 			$username = I('user_name', '', 'trim');
 			$paypwd = I('paypwd', '', 'trim');
+			if (empty($_POST['captcha'])) {
+				show_message('请填写验证码', '', '', 'fail');
+
+			}
+
+			$validator = new \Think\Verify();
+
+			if (!$validator->check($_POST['captcha'])) {
+				show_message('验证码错误', '', '', 'fail');
+			}
 
 			if ($choose_type <= 0 || empty($re_username) || empty($paypwd) || empty($username)) {
 				show_message('提交数据不完整！', '', '', 'fail');
@@ -644,7 +667,7 @@ class Account extends \app\http\base\controllers\Frontend {
 					$user_money = get_user_money_info($this->user_id);
 					if ($user_money['user_money'] >= $amount) {
 
-						log_account_change($this->user_id, -$amount, 0, 0, 0, '【帮人购卡】 ' . $user_info['user_name'] . '购卡，扣除现金积分', 56);
+						log_account_change($this->user_id, 0, 0, 0, -$amount, '【帮人购卡】 ' . $user_info['user_name'] . '购卡，扣除增值积分', 56);
 
 						$data = array();
 						$data['user_id'] = $user_info['user_id'];
@@ -687,6 +710,7 @@ class Account extends \app\http\base\controllers\Frontend {
 			show_message('操作成功', '', url('user/account/detail'), 'success');
 		}
 		$surplus_id = get_user_money_info($this->user_id);
+		$this->assign('member_type',$member_type);
 		$this->assign('order', $account);
 		$this->assign('process_type', $surplus_id);
 		$this->assign('page_title', '会员入单');
@@ -712,21 +736,31 @@ class Account extends \app\http\base\controllers\Frontend {
 		if (IS_POST) {
 			$amount = floatval($_POST['amount']);
 			$paypwd = trim($_POST['paypwd']);
+			if (empty($_POST['captcha'])) {
+				$this->assign('lock',1);
+				show_message('请填写验证码', '', url('return_self'), 'fail');
+
+			}
+
+			$validator = new \Think\Verify();
+
+			if (!$validator->check($_POST['captcha'])) {
+				show_message('验证码错误', '', url('return_self'), 'fail');
+			}
+
+
 			$res = dao('users_paypwd')->field('pay_password,ec_salt')->where(array('user_id' => $this->user_id))->find();
 			$new_password = md5(md5($paypwd) . $res['ec_salt']);
 			if ($new_password != $res['pay_password']) {
 				show_message('支付密码不正确');
 			}
 			$account = get_user_money_info($this->user_id);
-			if ($account['pay_points'] < $amount) {
-				show_message('您的增值积分不足！', '', '', 'error');
+			if ($account['user_money'] < $amount) {
+				show_message('您的现金积分不足！', '', '', 'error');
 			}
-
 			//扣除金额，增加金额
-			log_account_change($this->user_id, 0, 0, 0, -$amount, '【增值积分转换】扣除增值积分', 55);
-
-			log_account_change($this->user_id, $amount, 0, 0, 0, '【增值积分转换】增加现金积分', 55);
-
+			log_account_change($this->user_id, -$amount, 0, 0, 0, '【增值积分转换】扣除现金积分', 55);
+			log_account_change($this->user_id, 0, 0, 0, $amount, '【增值积分转换】增加增值积分', 55);
 			show_message('操作成功', '', url('user/account/detail'), 'success');
 		}
 		$surplus_id = get_user_money_info($this->user_id);
@@ -742,10 +776,21 @@ class Account extends \app\http\base\controllers\Frontend {
 			if($amount<=0){
 				show_message('转账金额请输入数字');
 			}
+			if (empty($_POST['captcha'])) {
+				$this->assign('lock',1);
+				show_message('请填写验证码', '', url('return_xianjin'), 'fail');
+
+			}
+
+			$validator = new \Think\Verify();
+
+			if (!$validator->check($_POST['captcha'])) {
+				show_message('验证码错误', '', url('return_xianjin'), 'fail');
+			}
 			$return_username = trim($_POST['return_username']);
 			$paypwd = trim($_POST['paypwd']);
 			$res = dao('users_paypwd')->field('pay_password,ec_salt')->where(array('user_id' => $this->user_id))->find();
-			$user_info = dao('users')->where('user_id',$this->user_id)->find();
+			$user_info = dao('users')->where(array('user_id'=>$this->user_id))->find();
 			$new_password = md5(md5($paypwd) . $res['ec_salt']);
 			if ($new_password != $res['pay_password']) {
 				show_message('支付密码不正确');
@@ -761,11 +806,12 @@ class Account extends \app\http\base\controllers\Frontend {
 			if ($return_info['user_id'] == $this->user_id) {
 				show_message('自己不能转给自己！');
 			}
-			$desc = '用户('.$user_info['user_name'].')'.'转给'.'('.$return_info['nick_name'].')'.$amount.'元';
+
+			$desc = '用户('.$user_info['nick_name'].')'.'转给'.'('.$return_info['nick_name'].')'.$amount.'元';
 			//扣除金额，增加金额
 			log_account_change($this->user_id, -$amount, 0, 0, 0, '【现金积分转让】现金积分转出。'.$desc, 54);
 
-			log_account_change($return_info['user_id'], $amount, 0, 0, 0, '【现金积分转让】现金积分转入 。'.$desc, 54);
+			log_account_change($return_info['user_id'], $amount, 0, 0, 0, '【现金积分转让】现金积分'.$return_info['nick_name'].'转入 。'.$amount.'元', 54);
 
 			show_message('转让成功', '', url('user/account/detail'), 'info');
 		}
@@ -779,13 +825,25 @@ class Account extends \app\http\base\controllers\Frontend {
 
 	public function actionReturnZengZhi() {
 
+
 		if (IS_POST) {
 			$amount = floatval($_POST['amount']);
 			if($amount <= 0){
 				show_message('转账金额请输入数字');
 
 			}
-			$user_info = dao('users')->where('user_id',$this->user_id)->find();
+			if (empty($_POST['captcha'])) {
+				$this->assign('lock',1);
+				show_message('请填写验证码', '', url('return_zengzhi'), 'fail');
+
+			}
+
+			$validator = new \Think\Verify();
+
+			if (!$validator->check($_POST['captcha'])) {
+				show_message('验证码错误', '', url('return_zengzhi'), 'fail');
+			}
+			$user_info = dao('users')->where(array('user_id'=>$this->user_id))->find();
 			$return_username = trim($_POST['return_username']);
 			$paypwd = trim($_POST['paypwd']);
 			$res = dao('users_paypwd')->field('pay_password,ec_salt')->where(array('user_id' => $this->user_id))->find();
@@ -804,11 +862,12 @@ class Account extends \app\http\base\controllers\Frontend {
 			if ($return_info['user_id'] == $this->user_id) {
 				show_message('自己不能转给自己！');
 			}
-			$desc = '用户('.$user_info['user_name'].')'.'转给'.'('.$return_info['nick_name'].')'.$amount.'元';
+			$desc = '用户'.$user_info['user_name'].'['.$user_info['nick_name'].']'.'转给'.''.$return_info['user_name'].'['.$return_info['nick_name'].']'.$amount.'元';
+			$desc2 = '用户'.$user_info['user_name'].'['.$user_info['nick_name'].']'.'转给'.''.$return_info['user_name'].'['.$return_info['nick_name'].']'.$amount.'元';
 			//扣除金额，增加金额
-			log_account_change($this->user_id, 0, 0, 0, -$amount, '【增值积分转让】现金积分转出'.$desc, 54);
+			log_account_change($this->user_id, 0, 0, 0, -$amount, '【增值积分转让】转出'.$desc, 54);
 
-			log_account_change($return_info['user_id'], 0, 0, 0, $amount, '【增值积分转让】现金积分转入'.$desc, 54);
+			log_account_change($return_info['user_id'], 0, 0, 0, $amount, '【增值积分转让】转入'.$desc2, 54);
 
 			show_message('转让成功', '', url('user/account/detail'), 'info');
 		}
@@ -833,13 +892,13 @@ class Account extends \app\http\base\controllers\Frontend {
 		if (!$result) {
 			ecs_header('Location: ' . url('user/profile/realname'));
 		}
-		$is_shop = dao('users')->where(array('user_id'=>$this->user_id))->field('is_shop')->find();
+		/*$is_shop = dao('users')->where(array('user_id'=>$this->user_id))->field('is_shop')->find();
 		if (empty($is_shop)) {
 			show_message('未找到信息', '', url('user/account/index'), 'error');
 		}
 		if ($is_shop['is_shop'] != 1) {
 			show_message('不是店长无法提现', '', url('user/account/index'), 'error');
-		}
+		}*/
 		$bank = array(
 			array('bank_name' => $result['bank_name'], 'bank_card' => substr($result['bank_card'], 0, 4) . '******' . substr($result['bank_card'], -4), 'bank_region' => $result['bank_name'], 'bank_user_name' => $result['real_name'], 'bank_card_org' => $result['bank_card'], 'bank_mobile' => $result['bank_mobile']),
 		);
@@ -858,6 +917,24 @@ class Account extends \app\http\base\controllers\Frontend {
 			}
 		}
 
+		if (empty($_POST['captcha'])) {
+			$this->assign('lock',1);
+			show_message('请填写验证码', '', '', 'fail');
+
+		}
+
+		$validator = new \Think\Verify();
+
+		if (!$validator->check($_POST['captcha'])) {
+			show_message('验证码错误', '', '', 'fail');
+		}
+		$paypwd = $_POST['paypwd'];
+		$pwd = dao('users_paypwd')->where(array('user_id'=>$this->user_id))->find();
+		$new_password = md5(md5($paypwd) . $pwd['ec_salt']);
+		if($new_password != $pwd['pay_password']){
+			show_message('验证码错误', '', '', 'fail');
+		}
+
 		$amount = (isset($_POST['amount']) ? floatval($_POST['amount']) : 0);
 
 		if ($amount <= 0) {
@@ -873,13 +950,13 @@ class Account extends \app\http\base\controllers\Frontend {
 				}
 			}
 
-			$find_info = dao('users')->where(array('user_id'=>$this->user_id))->field('is_shop')->find();
+			/*$find_info = dao('users')->where(array('user_id'=>$this->user_id))->field('is_shop')->find();
 			if (empty($find_info['is_shop'])) {
 				show_message('未找到信息', '', '', 'error');
 			}
 			if (intval($find_info['is_shop']) != 1) {
 				show_message('不是店长无法提现', '', '', 'error');
-			}
+			}*/
 
 			$sur_amount = get_user_surplus($this->user_id);
 
@@ -1425,9 +1502,11 @@ class Account extends \app\http\base\controllers\Frontend {
                 $start = $start - 30*24*60*60;
             }
             $where .= ' && add_time <'.$end.' && add_time >'.$start;
-           $data = dao('users_every')->where($where)->select();
-            $record_count = dao('users_every')->where(array('user_status'=>1,'belong_shop'=>$this->user_id))->count();
-           if(!empty($data)){
+           	$data = dao('users_every')->where($where)->select();
+			$record_count = dao('users_every')->where(
+				$where
+			)->count();
+			if(!empty($data)){
 
                $page = I('page', 1, 'intval');
                $offset = 10;
@@ -1461,16 +1540,220 @@ class Account extends \app\http\base\controllers\Frontend {
 
                    }
                }
-
-               exit(json_encode(array('order_list' => $data, 'totalPage' => $page_size, 'count' => $record_count)));
+               exit(json_encode(array('order_list' => $data,'totalPage' => $page_size, 'count' => $record_count)));
            }
 
-        }
+        }else{
+			$this->display();
+		}
 
-        $this->display();
 
 
 
+
+	}
+
+	public function actionDianzhang()
+	{
+
+
+		$y = date("Y");
+		$m = date("m");
+		$d = date("d");
+		$start= mktime(0,0,0,$m,$d,$y);
+		$end = $start + 24*60*60;
+		$yue_start = $start - 30*24*60*60;
+		/*今日银卡*/
+		$yin_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 1 && user_status = 1')->count();
+		$this->assign('yin_today',$yin_today);
+		/*当月银卡*/
+		$yin_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 1 && user_status = 1')->count();
+		$this->assign('yin_yue',$yin_yue);
+		/*总共银卡销售*/
+		$yin_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 1 && user_status = 1')->count();
+		$this->assign('yin_gong',$yin_gong);
+
+
+		/*金卡*/
+		/*今日金卡*/
+		$jin_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 2')->count();
+		$this->assign('jin_today',$jin_today);
+		/*当月金卡*/
+		$jin_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 2 ')->count();
+		$this->assign('jin_yue',$jin_yue);
+		/*总共金卡*/
+		$jin_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 2 ')->count();
+		$this->assign('jin_gong',$jin_gong);
+
+
+		/*钻卡*/
+		/*今日钻卡*/
+		$zuan_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 3 ')->count();
+		$this->assign('zuan_today',$zuan_today);
+		/*当月钻卡*/
+		$zuan_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 3 ')->count();
+		$this->assign('zuan_yue',$zuan_yue);
+		/*总共钻卡销售*/
+		$zuan_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 3')->count();
+		$this->assign('zuan_gong',$zuan_gong);
+
+		/*白金*/
+
+		/*今日白金*/
+		$bai_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 4')->count();
+		$this->assign('bai_today',$bai_today);
+		/*当月银卡*/
+		$bai_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 4')->count();
+		$this->assign('bai_yue',$bai_yue);
+		/*总共银卡销售*/
+		$bai_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 4')->count();
+		$this->assign('bai_gong',$bai_gong);
+
+		/*翡翠*/
+		/*今日翡翠*/
+		$fei_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 5')->count();
+		$this->assign('fei_today',$fei_today);
+		/*当月银卡*/
+		$fei_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 5')->count();
+		$this->assign('fei_yue',$fei_yue);
+		/*总共银卡销售*/
+		$fei_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 5')->count();
+		$this->assign('fei_gong',$fei_gong);
+
+		/*980推荐卡*/
+
+		/*今日980推荐卡*/
+		$tui_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 6')->count();
+		$this->assign('tui_today',$tui_today);
+		/*当月980推荐卡*/
+		$tui_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 6')->count();
+		$this->assign('tui_yue',$tui_yue);
+		/*总共推荐卡销售*/
+		$tui_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 6')->count();
+		$this->assign('tui_gong',$tui_gong);
+
+		/*一星董事*/
+		/*今日一星董事*/
+		$yixing_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 7')->count();
+		$this->assign('yixing_today',$yixing_today);
+		/*当月一星董事*/
+		$yixing_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 7')->count();
+		$this->assign('yixing_yue',$yixing_yue);
+		/*总共一星董事销售*/
+		$yixing_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 7')->count();
+		$this->assign('yixing_gong',$yixing_gong);
+
+		/*二星董事*/
+
+		$erxing_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 8')->count();
+		$this->assign('erxing_today',$erxing_today);
+		/*当月二星董事*/
+		$erxing_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 8')->count();
+		$this->assign('erxing_yue',$erxing_yue);
+		/*总共二星董事销售*/
+		$erxing_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 8')->count();
+		$this->assign('erxing_gong',$erxing_gong);
+
+
+		/*三星董事*/
+
+		$sanxing_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 9')->count();
+		$this->assign('sanxing_today',$sanxing_today);
+		/*当月三星董事*/
+		$sanxing_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 9')->count();
+		$this->assign('sanxing_yue',$sanxing_yue);
+		/*总三星董事销售*/
+		$sanxing_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 9')->count();
+		$this->assign('sanxing_gong',$sanxing_gong);
+
+
+		/*四星董事*/
+
+		$sixing_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 10')->count();
+		$this->assign('sixing_today',$sixing_today);
+		/*当月四星董事*/
+		$sixing_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 10')->count();
+		$this->assign('sixing_yue',$sixing_yue);
+		/*总四星董事销售*/
+		$sixing_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 10')->count();
+		$this->assign('sixing_gong',$sixing_gong);
+
+		/*五星董事*/
+
+		$wuxing_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 11')->count();
+		$this->assign('wuxing_today',$wuxing_today);
+		/*当月四星董事*/
+		$wuxing_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 11')->count();
+		$this->assign('wuxing_yue',$wuxing_yue);
+		/*总四星董事销售*/
+		$wuxing_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 11')->count();
+		$this->assign('wuxing_gong',$wuxing_gong);
+
+
+		/*星推荐*/
+
+		$xing_today = dao('users_every')->where('add_time <'.$end.' && add_time >'.$start.' && belong_shop = '.$this->user_id.'&& status = 12')->count();
+		$this->assign('xing_today',$xing_today);
+		/*当月四星董事*/
+		$xing_yue = dao('users_every')->where('add_time <'.$end.' && add_time >'.$yue_start.' && belong_shop = '.$this->user_id.'&& status = 12')->count();
+		$this->assign('xing_yue',$xing_yue);
+		/*总四星董事销售*/
+		$xing_gong = dao('users_every')->where('add_time <'.$end.' && belong_shop = '.$this->user_id.' && status = 12')->count();
+		$this->assign('xing_gong',$xing_gong);
+
+
+
+		$this->display();
+	}
+
+	public function actionMyMember(){
+
+		$size = 10;
+		$page = I('page', 1, 'intval');
+		/*$status = I('status', 0, 'intval');*/
+
+		if (IS_POST) {
+			$order_list = $this->get_my_member_list($this->user_id, 10, $page);
+			exit(json_encode(array('order_list' => $order_list['list'], 'totalPage' => $order_list['totalpage'])));
+		}
+
+		/*$this->assign('status', $status);*/
+		$this->assign('page_title', '我的分享');
+		$this->display('my_member');
+	}
+
+	private function get_my_member_list($user_id, $num = 10, $page = 1) {
+
+		$start = ($page - 1) * $num;
+		$res = array();
+
+			$condition = array();
+			$condition['parent_id'] = $this->user_id;
+			$total = dao('users')->where($condition)->count();
+			$one_list = dao('users')->where($condition)->field('user_id,nick_name,user_name,reg_time,is_shop')->limit($start . ',' . $num)->order('user_id desc')->select();
+			/*$ids_arr = array();
+			foreach ($one_list as $key => $value) {
+				$ids_arr[] = $value['user_id'];
+			}
+			if (!empty($ids_arr)) {
+				$res = dao('users')->where(array('parent_id' => array('in', $ids_arr)))->order('user_id desc')->select();
+			}*/
+
+		$arr = array();
+		foreach ($one_list as $key => $row) {
+			$row['reg_time'] = date('Y-m-d H:i:s', $row['reg_time']);
+			if (intval($row['is_shop']) == 0) {
+				$shop_info = dao('users')->where(array('user_id' => $row['belong_shop']))->field('user_name,nick_name')->find();
+				$row['belong_shop'] = $shop_info['nick_name'] . '的店铺';
+			} elseif (intval($row['is_shop']) == 1) {
+				$row['belong_shop'] = '自身拥有店铺';
+			}
+			$row['has_card_num'] = M('users_every')->where(array('user_id' => $row['user_id']))->count();
+
+			$arr[] = $row;
+		}
+		$order_list = array('list' => $arr, 'totalpage' => ceil($total / $num));
+		return $order_list;
 	}
 }
 

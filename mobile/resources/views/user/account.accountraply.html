@@ -50,7 +50,15 @@
                     </div>
                 </div>
             </section>
-            {if config('shop.sms_signin') == 1}
+            <section class="m-top1px margin-lr">
+                <div class="text-all dis-box j-text-all">
+                    <label class="t-remark">二级密码</label>
+                    <div class="box-flex input-text">
+                        <input class="j-input-text" type="password" placeholder="请输入支付密码" name="paypwd">
+                    </div>
+                </div>
+            </section>
+
             <section class="margin-lr">
                 <div class="text-all dis-box j-text-all">
                     <label class="t-remark">验证码</label>
@@ -62,6 +70,7 @@
                     </div>
                 </div>
             </section>
+            {if config('shop.sms_signin') == 1}
             <section class="margin-lr">
                 <div class="text-all dis-box j-text-all">
                     <label class="t-remark">短信验证码</label>

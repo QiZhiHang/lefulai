@@ -46,9 +46,9 @@ class Index extends \app\http\base\controllers\Frontend {
 		$today_condition = array();
 		$today_condition['change_time'] = array(array('gt', strtotime(date('Y-m-d'))),array('elt', strtotime(date('Y-m-d')) + 24 * 3600));
 		$today_condition['change_type'] = 57;
+		$today_condition['user_id'] = $this->user_id;
 
 		$today_money = dao('account_log')->where($today_condition)->sum('pay_points');
-
 		$this->assign('today_money', !empty($today_money) ? floatval($today_money) : 0.00);
 
 		$this->assign('cache_info', $cache_infos);
@@ -1026,6 +1026,12 @@ class Index extends \app\http\base\controllers\Frontend {
 			$matrixPointSize = 8;
 			\Touch\QRcode::png($url, false, $errorCorrectionLevel, $matrixPointSize, 2);
 		}
+	}
+
+	public function actionCard(){
+		$type = I('type');
+		$this->assign('type',$type);
+		$this->display();
 	}
 }
 
